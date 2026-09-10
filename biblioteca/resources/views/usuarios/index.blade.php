@@ -21,6 +21,7 @@
         <table border="1" cellpadding="8" cellspacing="0">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Nome</th>
                     <th>CPF</th>
                     <th>E-mail</th>
@@ -34,6 +35,7 @@
                 @foreach ($usuarios as $usuario)
 
                     <tr>
+                        <td>{{ $usuario->id }}</td>
                         <td>{{ $usuario->nome }}</td>
                         <td>{{ $usuario->cpf }}</td>
                         <td>{{ $usuario->email }}</td>

@@ -56,6 +56,8 @@ class LivroController extends Controller
 
     public function show(Livro $livro)
     {
+        $livro->load('emprestimos.usuario');
+        
         return view('livros.show', compact('livro'));
     }
 

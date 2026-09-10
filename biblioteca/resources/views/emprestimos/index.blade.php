@@ -22,6 +22,7 @@
 
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Livro</th>
                     <th>Usuário</th>
                     <th>Data do empréstimo</th>
@@ -36,6 +37,8 @@
                 @foreach ($emprestimos as $emprestimo)
 
                     <tr>
+
+                        <td>{{ $emprestimo->id }}</td>
 
                         <td>
                             <a href="{{ route('livros.show', $emprestimo->livro) }}">

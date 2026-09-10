@@ -21,6 +21,7 @@
         <table border="1" cellpadding="8" cellspacing="0">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Título</th>
                     <th>Autor</th>
                     <th>Categoria</th>
@@ -32,6 +33,7 @@
             <tbody>
                 @foreach ($livros as $livro)
                     <tr>
+                        <td>{{ $livro->id }}</td>
                         <td>{{ $livro->titulo }}</td>
                         <td>{{ $livro->autor }}</td>
                         <td>{{ $livro->categoria }}</td>

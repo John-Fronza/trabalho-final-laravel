@@ -86,7 +86,7 @@
                 type="date"
                 id="data_emprestimo"
                 name="data_emprestimo"
-                value="{{ old('data_emprestimo', now()->format('Y-m-d')) }}"
+                value="{{ old('data_emprestimo', $dataEmprestimo) }}"
                 required
             >
         </div>
@@ -102,7 +102,7 @@
                 type="date"
                 id="data_devolucao_prevista"
                 name="data_devolucao_prevista"
-                value="{{ old('data_devolucao_prevista') }}"
+                value="{{ old('data_devolucao_prevista', $dataDevolucaoPrevista) }}"
                 required
             >
         </div>

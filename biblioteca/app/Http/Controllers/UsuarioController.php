@@ -45,6 +45,8 @@ class UsuarioController extends Controller
 
     public function show(Usuario $usuario)
     {
+        $usuario->load('emprestimos.livro');
+
         return view('usuarios.show', compact('usuario'));
     }
 

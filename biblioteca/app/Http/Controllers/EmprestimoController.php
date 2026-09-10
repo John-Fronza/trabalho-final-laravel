@@ -23,7 +23,18 @@ class EmprestimoController extends Controller
         $livros = Livro::where('exemplares_disponiveis', '>', 0)->get();
         $usuarios = Usuario::all();
 
-        return view('emprestimos.create', compact('livros', 'usuarios'));
+        $dataEmprestimo = now()->toDateString();
+        $dataDevolucaoPrevista = now()->addDays(14)->toDateString();
+
+        return view(
+            'emprestimos.create',
+            compact(
+                'livros',
+                'usuarios',
+                'dataEmprestimo',
+                'dataDevolucaoPrevista'
+            )
+        );
     }
 
     public function store(Request $request)

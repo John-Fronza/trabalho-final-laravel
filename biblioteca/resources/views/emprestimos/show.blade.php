@@ -7,8 +7,12 @@
     <h1>Detalhes do Empréstimo</h1>
 
     <p>
-        <strong>Livro:</strong>
+        <strong>ID:</strong>
+        {{ $emprestimo->id }}
+    </p>
 
+    <p>
+        <strong>Livro:</strong>
         <a href="{{ route('livros.show', $emprestimo->livro) }}">
             {{ $emprestimo->livro->titulo }}
         </a>
@@ -16,7 +20,6 @@
 
     <p>
         <strong>Usuário:</strong>
-
         <a href="{{ route('usuarios.show', $emprestimo->usuario) }}">
             {{ $emprestimo->usuario->nome }}
         </a>
@@ -67,8 +70,8 @@
         Editar empréstimo
     </a>
 
-    <a href="{{ route('emprestimos.index') }}">
-        Voltar para empréstimos
-    </a>
+    <button type="button" onclick="history.back()">
+        ← Voltar
+    </button>
 
 @endsection

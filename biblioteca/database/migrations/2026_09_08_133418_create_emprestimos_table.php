@@ -21,19 +21,19 @@ return new class extends Migration
                 ->references('id')
                 ->on('livros')
                 ->restrictedOnDelete()
-                ->casacadeOnUpdate();
+                ->cascadeOnUpdate();
 
             $table->foreign('usuario_id')
                 ->references('id')
                 ->on('usuarios')
                 ->restrictedOnDelete()
-                ->casacadeOnUpdate();
+                ->cascadeOnUpdate();
 
             $table->date('data_emprestimo');
             $table->date('data_devolucao_prevista');
             $table->date('data_devolucao')->nullable();
             $table->boolean('emprestado');
-            $table->text('observacoes');
+            $table->text('observacoes')->nullable();
 
             $table->timestamps();
         });

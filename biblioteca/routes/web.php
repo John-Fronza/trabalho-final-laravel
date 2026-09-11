@@ -19,7 +19,7 @@ Route::resource('emprestimos', EmprestimoController::class);
 Route::get('/busca', [BuscaController::class, 'index'])
     ->name('busca.index');
 
-    Route::get('/busca/livro/{id}', [BuscaController::class, 'buscarLivroPorId'])
+Route::get('/busca/livro/{id}', [BuscaController::class, 'buscarLivroPorId'])
     ->where('id', '[0-9]+')
     ->name('busca.livro.id');
 

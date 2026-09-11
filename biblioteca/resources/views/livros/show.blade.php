@@ -1,160 +1,219 @@
+```blade
 @extends('app')
 
 @section('title', 'Detalhes do Livro')
 
 @section('content')
 
-    <h1>Detalhes do Livro</h1>
+    <div class="mx-auto max-w-5xl">
 
-    <p>
-        <strong>ID:</strong>
-        {{ $livro->id }}
-    </p>
+        <x-page-header
+            title="Detalhes do livro"
+            description="Visualize as informações e o histórico de empréstimos do livro."
+        />
 
-    <p>
-        <strong>Título:</strong>
-        {{ $livro->titulo }}
-    </p>
+        {{-- Informações do livro --}}
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
 
-    <p>
-        <strong>Autor:</strong>
-        {{ $livro->autor }}
-    </p>
+            <dl class="grid gap-6 sm:grid-cols-2">
 
-    <p>
-        <strong>Categoria:</strong>
-        {{ $livro->categoria }}
-    </p>
+                <x-detail label="ID">
+                    {{ $livro->id }}
+                </x-detail>
 
-    @isset($livro->isbn)
-        <p>
-            <strong>ISBN:</strong>
-            {{ $livro->isbn }}
-        </p>
-    @else
-        <p>
-            <strong>ISBN:</strong>
-            Não informado.
-        </p>
-    @endisset
+                <x-detail label="Título">
+                    {{ $livro->titulo }}
+                </x-detail>
 
-    @if ($livro->ano_publicacao)
-        <p>
-            <strong>Ano de publicação:</strong>
-            {{ $livro->ano_publicacao }}
-        </p>
-    @endif
+                <x-detail label="Autor">
+                    {{ $livro->autor }}
+                </x-detail>
 
-    <p>
-        <strong>Exemplares disponíveis:</strong>
-        {{ $livro->exemplares_disponiveis }}
-        /
-        {{ $livro->exemplares_totais }}
-    </p>
+                <x-detail label="Categoria">
+                    {{ $livro->categoria }}
+                </x-detail>
 
-    <p>
-        <strong>Descrição:</strong>
-    </p>
+                <x-detail label="ISBN">
+                    @isset($livro->isbn)
+                        {{ $livro->isbn }}
+                    @else
+                        Não informado.
+                    @endisset
+                </x-detail>
 
-    @if ($livro->descricao)
-        <p>
-            {{ $livro->descricao }}
-        </p>
-    @else
-        <p>
-            Nenhuma descrição cadastrada.
-        </p>
-    @endif
+                @if ($livro->ano_publicacao)
 
-    <hr>
+                    <x-detail label="Ano de publicação">
+                        {{ $livro->ano_publicacao }}
+                    </x-detail>
 
-    <h2>Histórico de Empréstimos</h2>
+                @endif
 
-    @if ($livro->emprestimos->isEmpty())
+                <x-detail label="Exemplares disponíveis">
+                    {{ $livro->exemplares_disponiveis }}
+                    /
+                    {{ $livro->exemplares_totais }}
+                </x-detail>
 
-        <p>
-            Este livro ainda não possui empréstimos registrados.
-        </p>
+                <x-detail label="Descrição">
+                    @if ($livro->descricao)
+                        {{ $livro->descricao }}
+                    @else
+                        Nenhuma descrição cadastrada.
+                    @endif
+                </x-detail>
 
-    @else
+            </dl>
 
-        <table border="1" cellpadding="8" cellspacing="0">
+        </div>
 
-            <thead>
-                <tr>
-                    <th>Usuário</th>
-                    <th>Data do empréstimo</th>
-                    <th>Devolução prevista</th>
-                    <th>Data de devolução</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
+        {{-- Histórico de empréstimos --}}
+        <div class="mt-8">
 
-            <tbody>
+            <h2 class="mb-4 text-xl font-semibold text-slate-900">
+                Histórico de empréstimos
+            </h2>
 
-                @foreach ($livro->emprestimos as $emprestimo)
+            @if ($livro->emprestimos->isEmpty())
 
-                    <tr>
+                <div class="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
 
-                        <td>
-                            <a href="{{ route('usuarios.show', $emprestimo->usuario) }}">
-                                {{ $emprestimo->usuario->nome }}
-                            </a>
-                        </td>
+                    <p class="text-slate-600">
+                        Este livro ainda não possui empréstimos registrados.
+                    </p>
 
-                        <td>
-                            {{ $emprestimo->data_emprestimo->format('d/m/Y') }}
-                        </td>
+                </div>
 
-                        <td>
-                            {{ $emprestimo->data_devolucao_prevista->format('d/m/Y') }}
-                        </td>
+            @else
 
-                        <td>
+                <x-table>
 
-                            @if ($emprestimo->data_devolucao)
-                                {{ $emprestimo->data_devolucao->format('d/m/Y') }}
-                            @else
-                                —
-                            @endif
+                    <x-slot:head>
 
-                        </td>
+                        <tr>
 
-                        <td>
+                            <th class="px-5 py-3 font-semibold">
+                                Usuário
+                            </th>
 
-                            @if ($emprestimo->emprestado)
-                                Emprestado
-                            @else
-                                Devolvido
-                            @endif
+                            <th class="px-5 py-3 font-semibold">
+                                Data do empréstimo
+                            </th>
 
-                        </td>
+                            <th class="px-5 py-3 font-semibold">
+                                Devolução prevista
+                            </th>
 
-                        <td>
-                            <a href="{{ route('emprestimos.show', $emprestimo) }}">
-                                Ver empréstimo
-                            </a>
-                        </td>
+                            <th class="px-5 py-3 font-semibold">
+                                Data de devolução
+                            </th>
 
-                    </tr>
+                            <th class="px-5 py-3 font-semibold">
+                                Status
+                            </th>
 
-                @endforeach
+                            <th class="px-5 py-3 font-semibold">
+                                Ações
+                            </th>
 
-            </tbody>
+                        </tr>
 
-        </table>
+                    </x-slot:head>
 
-    @endif
+                    @foreach ($livro->emprestimos as $emprestimo)
 
-    <br>
+                        <tr class="transition hover:bg-slate-50">
 
-    <a href="{{ route('livros.edit', $livro) }}">
-        Editar livro
-    </a>
+                            <td class="px-5 py-4">
 
-    <button type="button" onclick="history.back()">
-        ← Voltar
-    </button>
+                                <a
+                                    href="{{ route('usuarios.show', $emprestimo->usuario) }}"
+                                    class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                                >
+                                    {{ $emprestimo->usuario->nome }}
+                                </a>
+
+                            </td>
+
+                            <td class="px-5 py-4 text-slate-600">
+                                {{ $emprestimo->data_emprestimo->format('d/m/Y') }}
+                            </td>
+
+                            <td class="px-5 py-4 text-slate-600">
+                                {{ $emprestimo->data_devolucao_prevista->format('d/m/Y') }}
+                            </td>
+
+                            <td class="px-5 py-4 text-slate-600">
+
+                                @if ($emprestimo->data_devolucao)
+                                    {{ $emprestimo->data_devolucao->format('d/m/Y') }}
+                                @else
+                                    —
+                                @endif
+
+                            </td>
+
+                            <td class="px-5 py-4">
+                                @if ($emprestimo->emprestado)
+                                    @if ($emprestimo->data_devolucao_prevista->lt(today()))
+                                        <x-badge
+                                            text="Atrasado"
+                                            color="red"
+                                        />
+                                    @else
+                                        <x-badge
+                                            text="Emprestado"
+                                            color="yellow"
+                                        />
+                                    @endif
+                                @else
+                                    <x-badge
+                                        text="Devolvido"
+                                        color="green"
+                                    />
+                                @endif
+                            </td>
+
+                            <td class="px-5 py-4">
+
+                                <a
+                                    href="{{ route('emprestimos.show', $emprestimo) }}"
+                                    class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                                >
+                                    Ver empréstimo
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    @endforeach
+
+                </x-table>
+
+            @endif
+
+        </div>
+
+        {{-- Ações --}}
+        <div class="mt-8 flex justify-end gap-3">
+
+            <x-button
+                text="Editar livro"
+                :href="route('livros.edit', $livro)"
+                color="slate"
+            />
+
+            <x-button
+                text="← Voltar"
+                type="button"
+                onclick="history.back()"
+                color="slate"
+                class="!bg-white !text-slate-700 !ring-1 !ring-slate-300 hover:!bg-slate-50"
+            />
+
+        </div>
+
+    </div>
 
 @endsection

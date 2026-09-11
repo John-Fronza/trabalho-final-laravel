@@ -4,107 +4,176 @@
 
 @section('content')
 
-    <h1>Empréstimos</h1>
+<div class="mx-auto max-w-6xl">
 
-    <a href="{{ route('emprestimos.create') }}">
-        Registrar novo empréstimo
-    </a>
+{{-- Cabeçalho --}}
+<x-page-header
+    title="Empréstimos"
+    description="Gerencie os empréstimos realizados na biblioteca."
+>
+    <x-slot:actions>
 
-    <hr>
+        <x-button
+            text="+ Registrar empréstimo"
+            :href="route('emprestimos.create')"
+        />
 
-    @if ($emprestimos->isEmpty())
+    </x-slot:actions>
+</x-page-header>
 
-        <p>Nenhum empréstimo cadastrado.</p>
+{{-- Tabela --}}
+@if ($emprestimos->isEmpty())
 
-    @else
+    <div class="rounded-xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
 
-        <table border="1" cellpadding="8" cellspacing="0">
+        <p class="text-slate-600">
+            Nenhum empréstimo cadastrado.
+        </p>
 
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Livro</th>
-                    <th>Usuário</th>
-                    <th>Data do empréstimo</th>
-                    <th>Devolução prevista</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
+        <a
+            href="{{ route('emprestimos.create') }}"
+            class="mt-4 inline-block text-sm font-medium text-slate-700 hover:text-slate-950 hover:underline"
+        >
+            Registrar o primeiro empréstimo
+        </a>
 
-            <tbody>
+    </div>
 
-                @foreach ($emprestimos as $emprestimo)
+@else
 
-                    <tr>
+    <x-table>
 
-                        <td>{{ $emprestimo->id }}</td>
+        {{-- Cabeçalho da tabela --}}
+        <x-slot:head>
 
-                        <td>
-                            <a href="{{ route('livros.show', $emprestimo->livro) }}">
-                                {{ $emprestimo->livro->titulo }}
-                            </a>
-                        </td>
+            <tr>
 
-                        <td>
-                            <a href="{{ route('usuarios.show', $emprestimo->usuario) }}">
-                                {{ $emprestimo->usuario->nome }}
-                            </a>
-                        </td>
+                <th class="px-5 py-3 font-semibold">
+                    ID
+                </th>
 
-                        <td>
-                            {{ $emprestimo->data_emprestimo->format('d/m/Y') }}
-                        </td>
+                <th class="px-5 py-3 font-semibold">
+                    Livro
+                </th>
 
-                        <td>
-                            {{ $emprestimo->data_devolucao_prevista->format('d/m/Y') }}
-                        </td>
+                <th class="px-5 py-3 font-semibold">
+                    Usuário
+                </th>
 
-                        <td>
+                <th class="px-5 py-3 font-semibold">
+                    Empréstimo
+                </th>
 
-                            @if ($emprestimo->emprestado)
-                                Emprestado
-                            @else
-                                Devolvido
-                            @endif
+                <th class="px-5 py-3 font-semibold">
+                    Devolução prevista
+                </th>
 
-                        </td>
+                <th class="px-5 py-3 font-semibold">
+                    Status
+                </th>
 
-                        <td>
+                <th class="px-5 py-3 font-semibold">
+                    Ações
+                </th>
 
-                            <a href="{{ route('emprestimos.show', $emprestimo) }}">
-                                Ver
-                            </a>
+            </tr>
 
-                            <a href="{{ route('emprestimos.edit', $emprestimo) }}">
-                                Editar
-                            </a>
+        </x-slot:head>
 
-                            <form
-                                action="{{ route('emprestimos.destroy', $emprestimo) }}"
-                                method="POST"
-                                style="display: inline;"
-                            >
 
-                                @csrf
-                                @method('DELETE')
+        {{-- Linhas da tabela --}}
+        @foreach ($emprestimos as $emprestimo)
 
-                                <button type="submit">
-                                    Excluir
-                                </button>
+            <tr class="transition hover:bg-slate-50">
 
-                            </form>
+                <td class="px-5 py-4 font-medium text-slate-500">
+                    #{{ $emprestimo->id }}
+                </td>
 
-                        </td>
+                <td class="px-5 py-4 font-medium text-slate-900">
+                    {{ $emprestimo->livro->titulo }}
+                </td>
 
-                    </tr>
+                <td class="px-5 py-4 text-slate-600">
+                    {{ $emprestimo->usuario->nome }}
+                </td>
 
-                @endforeach
+                <td class="px-5 py-4 text-slate-600">
+                    {{ $emprestimo->data_emprestimo->format('d/m/Y') }}
+                </td>
 
-            </tbody>
+                <td class="px-5 py-4 text-slate-600">
+                    {{ $emprestimo->data_devolucao_prevista->format('d/m/Y') }}
+                </td>
 
-        </table>
+                <td class="px-5 py-4">
+                    @if ($emprestimo->emprestado)
+                        @if ($emprestimo->data_devolucao_prevista->lt(today()))
+                            <x-badge
+                                text="Atrasado"
+                                color="red"
+                            />
+                        @else
+                            <x-badge
+                                text="Emprestado"
+                                color="yellow"
+                            />
+                        @endif
+                    @else
+                        <x-badge
+                            text="Devolvido"
+                            color="green"
+                        />
+                    @endif
+                </td>
 
-    @endif
+                <td class="px-5 py-4">
+
+                    <div class="flex flex-wrap items-center gap-3">
+
+                        <a
+                            href="{{ route('emprestimos.show', $emprestimo) }}"
+                            class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                        >
+                            Ver
+                        </a>
+
+                        <a
+                            href="{{ route('emprestimos.edit', $emprestimo) }}"
+                            class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                        >
+                            Editar
+                        </a>
+
+                        <form
+                            id="delete-form-{{ $emprestimo->id }}"
+                            action="{{ route('emprestimos.destroy', $emprestimo) }}"
+                            method="POST"
+                        >
+                            @csrf
+                            @method('DELETE')
+                        </form>
+
+                        <x-confirm
+                            :id="$emprestimo->id"
+                            title="Excluir empréstimo"
+                            message="Tem certeza que deseja excluir este empréstimo?"
+                            :form="'delete-form-' . $emprestimo->id"
+                            confirm-text="Excluir empréstimo"
+                        />
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        @endforeach
+
+    </x-table>
+
+@endif
+
+</div>
 
 @endsection

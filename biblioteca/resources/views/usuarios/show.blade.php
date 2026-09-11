@@ -4,122 +4,189 @@
 
 @section('content')
 
-    <h1>Detalhes do Usuário</h1>
+    <div class="mx-auto max-w-5xl">
 
-    <p>
-        <strong>ID:</strong>
-        {{ $usuario->id }}
-    </p>
+        <x-page-header
+            title="Detalhes do usuário"
+            description="Visualize as informações e o histórico de empréstimos do usuário."
+        />
 
-    <p>
-        <strong>Nome:</strong>
-        {{ $usuario->nome }}
-    </p>
+        {{-- Informações do usuário --}}
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
 
-    <p>
-        <strong>CPF:</strong>
-        {{ $usuario->cpf }}
-    </p>
+            <dl class="grid gap-6 sm:grid-cols-2">
 
-    <p>
-        <strong>E-mail:</strong>
-        {{ $usuario->email }}
-    </p>
+                <x-detail label="ID">
+                    {{ $usuario->id }}
+                </x-detail>
 
-    <p>
-        <strong>Telefone:</strong>
-        {{ $usuario->telefone }}
-    </p>
+                <x-detail label="Nome">
+                    {{ $usuario->nome }}
+                </x-detail>
 
-    <hr>
+                <x-detail label="CPF">
+                    {{ $usuario->cpf }}
+                </x-detail>
 
-    <h2>Histórico de Empréstimos</h2>
+                <x-detail label="E-mail">
+                    {{ $usuario->email }}
+                </x-detail>
 
-    @if ($usuario->emprestimos->isEmpty())
+                <x-detail label="Telefone">
+                    {{ $usuario->telefone }}
+                </x-detail>
 
-        <p>
-            Este usuário ainda não possui empréstimos registrados.
-        </p>
+            </dl>
 
-    @else
+        </div>
 
-        <table border="1" cellpadding="8" cellspacing="0">
+        {{-- Histórico de empréstimos --}}
+        <div class="mt-8">
 
-            <thead>
-                <tr>
-                    <th>Livro</th>
-                    <th>Data do empréstimo</th>
-                    <th>Devolução prevista</th>
-                    <th>Data de devolução</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
+            <h2 class="mb-4 text-xl font-semibold text-slate-900">
+                Histórico de empréstimos
+            </h2>
 
-            <tbody>
+            @if ($usuario->emprestimos->isEmpty())
 
-                @foreach ($usuario->emprestimos as $emprestimo)
+                <div class="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
 
-                    <tr>
+                    <p class="text-slate-600">
+                        Este usuário ainda não possui empréstimos registrados.
+                    </p>
 
-                        <td>
-                            <a href="{{ route('livros.show', $emprestimo->livro) }}">
-                                {{ $emprestimo->livro->titulo }}
-                            </a>
-                        </td>
+                </div>
 
-                        <td>
-                            {{ $emprestimo->data_emprestimo->format('d/m/Y') }}
-                        </td>
+            @else
 
-                        <td>
-                            {{ $emprestimo->data_devolucao_prevista->format('d/m/Y') }}
-                        </td>
+                <x-table>
 
-                        <td>
+                    <x-slot:head>
 
-                            @if ($emprestimo->data_devolucao)
-                                {{ $emprestimo->data_devolucao->format('d/m/Y') }}
-                            @else
-                                —
-                            @endif
+                        <tr>
 
-                        </td>
+                            <th class="px-5 py-3 font-semibold">
+                                Livro
+                            </th>
 
-                        <td>
+                            <th class="px-5 py-3 font-semibold">
+                                Data do empréstimo
+                            </th>
 
-                            @if ($emprestimo->emprestado)
-                                Emprestado
-                            @else
-                                Devolvido
-                            @endif
+                            <th class="px-5 py-3 font-semibold">
+                                Devolução prevista
+                            </th>
 
-                        </td>
+                            <th class="px-5 py-3 font-semibold">
+                                Data de devolução
+                            </th>
 
-                        <td>
-                            <a href="{{ route('emprestimos.show', $emprestimo) }}">
-                                Ver empréstimo
-                            </a>
-                        </td>
+                            <th class="px-5 py-3 font-semibold">
+                                Status
+                            </th>
 
-                    </tr>
+                            <th class="px-5 py-3 font-semibold">
+                                Ações
+                            </th>
 
-                @endforeach
+                        </tr>
 
-            </tbody>
+                    </x-slot:head>
 
-        </table>
+                    @foreach ($usuario->emprestimos as $emprestimo)
 
-    @endif
+                        <tr class="transition hover:bg-slate-50">
 
-    <br>
+                            <td class="px-5 py-4">
 
-    <a href="{{ route('usuarios.edit', $usuario) }}">
-        Editar usuário
-    </a>
+                                <a
+                                    href="{{ route('livros.show', $emprestimo->livro) }}"
+                                    class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                                >
+                                    {{ $emprestimo->livro->titulo }}
+                                </a>
 
-    <button type="button" onclick="history.back()">
-        ← Voltar
-    </button>
+                            </td>
+
+                            <td class="px-5 py-4 text-slate-600">
+                                {{ $emprestimo->data_emprestimo->format('d/m/Y') }}
+                            </td>
+
+                            <td class="px-5 py-4 text-slate-600">
+                                {{ $emprestimo->data_devolucao_prevista->format('d/m/Y') }}
+                            </td>
+
+                            <td class="px-5 py-4 text-slate-600">
+
+                                @if ($emprestimo->data_devolucao)
+                                    {{ $emprestimo->data_devolucao->format('d/m/Y') }}
+                                @else
+                                    —
+                                @endif
+
+                            </td>
+
+                            <td class="px-5 py-4">
+                                @if ($emprestimo->emprestado)
+                                    @if ($emprestimo->data_devolucao_prevista->lt(today()))
+                                        <x-badge
+                                            text="Atrasado"
+                                            color="red"
+                                        />
+                                    @else
+                                        <x-badge
+                                            text="Emprestado"
+                                            color="yellow"
+                                        />
+                                    @endif
+                                @else
+                                    <x-badge
+                                        text="Devolvido"
+                                        color="green"
+                                    />
+                                @endif
+                            </td>
+
+                            <td class="px-5 py-4">
+
+                                <a
+                                    href="{{ route('emprestimos.show', $emprestimo) }}"
+                                    class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                                >
+                                    Ver empréstimo
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    @endforeach
+
+                </x-table>
+
+            @endif
+
+        </div>
+
+        {{-- Ações --}}
+        <div class="mt-8 flex justify-end gap-3">
+
+            <x-button
+                text="Editar usuário"
+                :href="route('usuarios.edit', $usuario)"
+                color="slate"
+            />
+
+            <x-button
+                text="← Voltar"
+                type="button"
+                onclick="history.back()"
+                color="slate"
+                class="!bg-white !text-slate-700 !ring-1 !ring-slate-300 hover:!bg-slate-50"
+            />
+
+        </div>
+
+    </div>
 
 @endsection

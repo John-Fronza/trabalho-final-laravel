@@ -4,74 +4,151 @@
 
 @section('content')
 
-    <h1>Usuários</h1>
+<div class="mx-auto max-w-6xl">
 
-    <a href="{{ route('usuarios.create') }}">
-        Cadastrar novo usuário
-    </a>
+{{-- Cabeçalho --}}
+<x-page-header
+    title="Usuários"
+    description="Gerencie os usuários cadastrados na biblioteca."
+>
+    <x-slot:actions>
 
-    <hr>
+        <x-button
+            text="+ Cadastrar usuário"
+            :href="route('usuarios.create')"
+        />
 
-    @if ($usuarios->isEmpty())
+    </x-slot:actions>
+</x-page-header>
 
-        <p>Nenhum usuário cadastrado.</p>
+{{-- Tabela --}}
+@if ($usuarios->isEmpty())
 
-    @else
+    <div class="rounded-xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
 
-        <table border="1" cellpadding="8" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>CPF</th>
-                    <th>E-mail</th>
-                    <th>Telefone</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
+        <p class="text-slate-600">
+            Nenhum usuário cadastrado.
+        </p>
 
-            <tbody>
+        <a
+            href="{{ route('usuarios.create') }}"
+            class="mt-4 inline-block text-sm font-medium text-slate-700 hover:text-slate-950 hover:underline"
+        >
+            Cadastrar o primeiro usuário
+        </a>
 
-                @foreach ($usuarios as $usuario)
+    </div>
 
-                    <tr>
-                        <td>{{ $usuario->id }}</td>
-                        <td>{{ $usuario->nome }}</td>
-                        <td>{{ $usuario->cpf }}</td>
-                        <td>{{ $usuario->email }}</td>
-                        <td>{{ $usuario->telefone }}</td>
+@else
 
-                        <td>
+    <x-table>
 
-                            <a href="{{ route('usuarios.show', $usuario) }}">
-                                Ver
-                            </a>
+        {{-- Cabeçalho da tabela --}}
+        <x-slot:head>
 
-                            <a href="{{ route('usuarios.edit', $usuario) }}">
-                                Editar
-                            </a>
+            <tr>
 
-                            <form
-                                action="{{ route('usuarios.destroy', $usuario) }}"
-                                method="POST"
-                                style="display: inline;"
-                            >
-                                @csrf
-                                @method('DELETE')
+                <th class="px-5 py-3 font-semibold">
+                    ID
+                </th>
 
-                                <button type="submit">
-                                    Excluir
-                                </button>
-                            </form>
+                <th class="px-5 py-3 font-semibold">
+                    Nome
+                </th>
 
-                        </td>
-                    </tr>
+                <th class="px-5 py-3 font-semibold">
+                    CPF
+                </th>
 
-                @endforeach
+                <th class="px-5 py-3 font-semibold">
+                    E-mail
+                </th>
 
-            </tbody>
-        </table>
+                <th class="px-5 py-3 font-semibold">
+                    Telefone
+                </th>
 
-    @endif
+                <th class="px-5 py-3 font-semibold">
+                    Ações
+                </th>
+
+            </tr>
+
+        </x-slot:head>
+
+
+        {{-- Linhas da tabela --}}
+        @foreach ($usuarios as $usuario)
+
+            <tr class="transition hover:bg-slate-50">
+
+                <td class="px-5 py-4 font-medium text-slate-500">
+                    #{{ $usuario->id }}
+                </td>
+
+                <td class="px-5 py-4 font-medium text-slate-900">
+                    {{ $usuario->nome }}
+                </td>
+
+                <td class="px-5 py-4 text-slate-600">
+                    {{ $usuario->cpf }}
+                </td>
+
+                <td class="px-5 py-4 text-slate-600">
+                    {{ $usuario->email }}
+                </td>
+
+                <td class="px-5 py-4 text-slate-600">
+                    {{ $usuario->telefone }}
+                </td>
+
+                <td class="px-5 py-4">
+
+                    <div class="flex flex-wrap items-center gap-3">
+
+                        <a
+                            href="{{ route('usuarios.show', $usuario) }}"
+                            class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                        >
+                            Ver
+                        </a>
+
+                        <a
+                            href="{{ route('usuarios.edit', $usuario) }}"
+                            class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                        >
+                            Editar
+                        </a>
+
+                        <form
+                            id="delete-form-{{ $usuario->id }}"
+                            action="{{ route('usuarios.destroy', $usuario) }}"
+                            method="POST"
+                        >
+                            @csrf
+                            @method('DELETE')
+                        </form>
+
+                        <x-confirm
+                            :id="$usuario->id"
+                            title="Excluir usuário"
+                            :message="'Tem certeza que deseja excluir ' . $usuario->nome . '?'"
+                            :form="'delete-form-' . $usuario->id"
+                            confirm-text="Excluir usuário"
+                        />
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        @endforeach
+
+    </x-table>
+
+@endif
+
+</div>
 
 @endsection

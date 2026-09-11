@@ -4,136 +4,71 @@
 
 @section('content')
 
-    <h1>Registrar Empréstimo</h1>
+<div class="mx-auto max-w-3xl">
 
-    @if ($errors->any())
+    {{-- Cabeçalho --}}
+    <x-page-header
+        title="Registrar empréstimo"
+        description="Registre um novo empréstimo de livro para um usuário."
+    />
 
-        <div class="erro">
+    {{-- Formulário --}}
+    <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
 
-            <strong>Corrija os seguintes erros:</strong>
+        @if ($errors->any())
 
-            <ul>
-                @foreach ($errors->all() as $erro)
-                    <li>{{ $erro }}</li>
-                @endforeach
-            </ul>
+            <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
 
-        </div>
+                <p class="font-medium">
+                    Corrija os seguintes erros:
+                </p>
 
-    @endif
+                <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+                    @foreach ($errors->all() as $erro)
+                        <li>{{ $erro }}</li>
+                    @endforeach
+                </ul>
 
-    <form action="{{ route('emprestimos.store') }}" method="POST">
+            </div>
 
-        @csrf
+        @endif
 
-        <div>
-            <label for="livro_id">Livro:</label>
 
-            <select id="livro_id" name="livro_id" required>
+        <form action="{{ route('emprestimos.store') }}" method="POST">
 
-                <option value="">
-                    Selecione um livro
-                </option>
+            @csrf
 
-                @foreach ($livros as $livro)
+            <x-emprestimo-form
+                mode="create"
+                :livros="$livros"
+                :usuarios="$usuarios"
+                :data-emprestimo="$dataEmprestimo"
+                :data-devolucao-prevista="$dataDevolucaoPrevista"
+            />
 
-                    <option
-                        value="{{ $livro->id }}"
-                        {{ old('livro_id') == $livro->id ? 'selected' : '' }}
-                    >
-                        {{ $livro->titulo }}
-                        ({{ $livro->exemplares_disponiveis }} disponíveis)
-                    </option>
 
-                @endforeach
+            {{-- Botões --}}
+            <div class="mt-8 flex justify-end gap-3">
 
-            </select>
-        </div>
+                <x-button
+                    text="Cancelar"
+                    :href="route('emprestimos.index')"
+                    color="slate"
+                    class="!bg-white !text-slate-700 !ring-1 !ring-slate-300 hover:!bg-slate-50"
+                />
 
-        <br>
+                <x-button
+                    text="Registrar empréstimo"
+                    type="submit"
+                    color="green"
+                />
 
-        <div>
-            <label for="usuario_id">Usuário:</label>
+            </div>
 
-            <select id="usuario_id" name="usuario_id" required>
+        </form>
 
-                <option value="">
-                    Selecione um usuário
-                </option>
+    </div>
 
-                @foreach ($usuarios as $usuario)
-
-                    <option
-                        value="{{ $usuario->id }}"
-                        {{ old('usuario_id') == $usuario->id ? 'selected' : '' }}
-                    >
-                        {{ $usuario->nome }}
-                    </option>
-
-                @endforeach
-
-            </select>
-        </div>
-
-        <br>
-
-        <div>
-            <label for="data_emprestimo">
-                Data do empréstimo:
-            </label>
-
-            <input
-                type="date"
-                id="data_emprestimo"
-                name="data_emprestimo"
-                value="{{ old('data_emprestimo', $dataEmprestimo) }}"
-                required
-            >
-        </div>
-
-        <br>
-
-        <div>
-            <label for="data_devolucao_prevista">
-                Data prevista para devolução:
-            </label>
-
-            <input
-                type="date"
-                id="data_devolucao_prevista"
-                name="data_devolucao_prevista"
-                value="{{ old('data_devolucao_prevista', $dataDevolucaoPrevista) }}"
-                required
-            >
-        </div>
-
-        <br>
-
-        <div>
-            <label for="observacoes">
-                Observações:
-            </label>
-
-            <br>
-
-            <textarea
-                id="observacoes"
-                name="observacoes"
-                rows="5"
-                cols="50"
-            >{{ old('observacoes') }}</textarea>
-        </div>
-
-        <br>
-
-        <button type="submit">
-            Registrar Empréstimo
-        </button>
-
-        <a href="{{ route('emprestimos.index') }}">
-            Cancelar
-        </a>
-
-    </form>
+</div>
 
 @endsection

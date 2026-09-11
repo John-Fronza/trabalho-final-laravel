@@ -4,71 +4,153 @@
 
 @section('content')
 
-    <h1>Livros</h1>
+<div class="mx-auto max-w-6xl">
 
-    <a href="{{ route('livros.create') }}">
-        Cadastrar novo livro
-    </a>
+    {{-- Cabeçalho --}}
+    <x-page-header
+        title="Livros"
+        description="Gerencie os livros cadastrados na biblioteca."
+    >
+        <x-slot:actions>
 
-    <hr>
+            <x-button
+                text="+ Cadastrar livro"
+                :href="route('livros.create')"
+            />
 
+        </x-slot:actions>
+    </x-page-header>
+
+    {{-- Tabela --}}
     @if ($livros->isEmpty())
 
-        <p>Nenhum livro cadastrado.</p>
+        <div class="rounded-xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
+
+            <p class="text-slate-600">
+                Nenhum livro cadastrado.
+            </p>
+
+            <a
+                href="{{ route('livros.create') }}"
+                class="mt-4 inline-block text-sm font-medium text-slate-700 hover:text-slate-950 hover:underline"
+            >
+                Cadastrar o primeiro livro
+            </a>
+
+        </div>
 
     @else
 
-        <table border="1" cellpadding="8" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Categoria</th>
-                    <th>Exemplares</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
+        <x-table>
 
-            <tbody>
-                @foreach ($livros as $livro)
-                    <tr>
-                        <td>{{ $livro->id }}</td>
-                        <td>{{ $livro->titulo }}</td>
-                        <td>{{ $livro->autor }}</td>
-                        <td>{{ $livro->categoria }}</td>
-                        <td>
-                            {{ $livro->exemplares_disponiveis }}
-                            /
-                            {{ $livro->exemplares_totais }}
-                        </td>
-                        <td>
-                            <a href="{{ route('livros.show', $livro) }}">
+            {{-- Cabeçalho da tabela --}}
+            <x-slot:head>
+
+                <tr>
+
+                    <th class="px-5 py-3 font-semibold">
+                        ID
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Título
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Autor
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Categoria
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Disponíveis
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Ações
+                    </th>
+
+                </tr>
+
+            </x-slot:head>
+
+
+            {{-- Linhas da tabela --}}
+            @foreach ($livros as $livro)
+
+                <tr class="transition hover:bg-slate-50">
+
+                    <td class="px-5 py-4 font-medium text-slate-500">
+                        #{{ $livro->id }}
+                    </td>
+
+                    <td class="px-5 py-4 font-medium text-slate-900">
+                        {{ $livro->titulo }}
+                    </td>
+
+                    <td class="px-5 py-4 text-slate-600">
+                        {{ $livro->autor }}
+                    </td>
+
+                    <td class="px-5 py-4 text-slate-600">
+                        {{ $livro->categoria }}
+                    </td>
+
+                    <td class="px-5 py-4 text-slate-600">
+                        {{ $livro->exemplares_disponiveis }}
+                        /
+                        {{ $livro->exemplares_totais }}
+                    </td>
+
+                    <td class="px-5 py-4">
+
+                        <div class="flex flex-wrap items-center gap-3">
+
+                            <a
+                                href="{{ route('livros.show', $livro) }}"
+                                class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                            >
                                 Ver
                             </a>
 
-                            <a href="{{ route('livros.edit', $livro) }}">
+                            <a
+                                href="{{ route('livros.edit', $livro) }}"
+                                class="font-medium text-slate-700 hover:text-slate-950 hover:underline"
+                            >
                                 Editar
                             </a>
 
                             <form
+                                id="delete-form-{{ $livro->id }}"
                                 action="{{ route('livros.destroy', $livro) }}"
                                 method="POST"
-                                style="display: inline;"
                             >
                                 @csrf
                                 @method('DELETE')
-
-                                <button type="submit">
-                                    Excluir
-                                </button>
                             </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+
+                            <x-confirm
+                                :id="$livro->id"
+                                title="Excluir livro"
+                                :message="'Tem certeza que deseja excluir ' . $livro->titulo . '?'"
+                                :form="'delete-form-' . $livro->id"
+                                confirm-text="Excluir livro"
+                            />
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            @endforeach
+
+        </x-table>
 
     @endif
+
+</div>
 
 @endsection

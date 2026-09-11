@@ -4,137 +4,65 @@
 
 @section('content')
 
-    <h1>Cadastrar Livro</h1>
+<div class="mx-auto max-w-3xl">
 
-    @if ($errors->any())
-        <div class="erro">
-            <strong>Corrija os seguintes erros:</strong>
+    {{-- Cabeçalho --}}
+    <x-page-header
+        title="Cadastrar livro"
+        description="Adicione um novo livro ao acervo da biblioteca."
+    />
 
-            <ul>
-                @foreach ($errors->all() as $erro)
-                    <li>{{ $erro }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    {{-- Formulário --}}
+    <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
 
-    <form action="{{ route('livros.store') }}" method="POST">
+        @if ($errors->any())
 
-        @csrf
+            <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
 
-        <div>
-            <label for="titulo">Título:</label>
-            <input
-                type="text"
-                id="titulo"
-                name="titulo"
-                value="{{ old('titulo') }}"
-                required
-            >
-        </div>
+                <p class="font-medium">
+                    Corrija os seguintes erros:
+                </p>
 
-        <br>
+                <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+                    @foreach ($errors->all() as $erro)
+                        <li>{{ $erro }}</li>
+                    @endforeach
+                </ul>
 
-        <div>
-            <label for="autor">Autor:</label>
-            <input
-                type="text"
-                id="autor"
-                name="autor"
-                value="{{ old('autor') }}"
-                required
-            >
-        </div>
+            </div>
 
-        <br>
+        @endif
 
-        <div>
-            <label for="isbn">ISBN:</label>
-            <input
-                type="text"
-                id="isbn"
-                name="isbn"
-                value="{{ old('isbn') }}"
-            >
-        </div>
 
-        <br>
+        <form action="{{ route('livros.store') }}" method="POST">
 
-        <div>
-            <label for="categoria">Categoria:</label>
-            <select id="categoria" name="categoria" required>
-                <option value="">Selecione uma categoria</option>
-                <option value="Fantasia">Fantasia</option>
-                <option value="Ficção">Ficção</option>
-                <option value="Romance">Romance</option>
-                <option value="Aventura">Aventura</option>
-                <option value="Terror">Terror</option>
-                <option value="Mistério">Mistério</option>
-                <option value="Biografia">Biografia</option>
-            </select>
-        </div>
+            @csrf
 
-        <br>
+            <x-livro-form mode="create" />
 
-        <div>
-            <label for="ano_publicacao">Ano de publicação:</label>
-            <input
-                type="number"
-                id="ano_publicacao"
-                name="ano_publicacao"
-                value="{{ old('ano_publicacao') }}"
-            >
-        </div>
 
-        <br>
+            {{-- Botões --}}
+            <div class="mt-8 flex justify-end gap-3">
 
-        <div>
-            <label for="exemplares_totais">Exemplares totais:</label>
-            <input
-                type="number"
-                id="exemplares_totais"
-                name="exemplares_totais"
-                value="{{ old('exemplares_totais', 1) }}"
-                min="1"
-                required
-            >
-        </div>
+                <x-button
+                    text="Cancelar"
+                    :href="route('livros.index')"
+                    color="slate"
+                    class="!bg-white !text-slate-700 !ring-1 !ring-slate-300 hover:!bg-slate-50"
+                />
 
-        <br>
+                <x-button
+                    text="Cadastrar livro"
+                    type="submit"
+                    color="green"
+                />
 
-        <div>
-            <label for="exemplares_disponiveis">Exemplares disponíveis:</label>
-            <input
-                type="number"
-                id="exemplares_disponiveis"
-                name="exemplares_disponiveis"
-                value="{{ old('exemplares_disponiveis', 1) }}"
-                min="0"
-                required
-            >
-        </div>
+            </div>
 
-        <br>
+        </form>
 
-        <div>
-            <label for="descricao">Descrição:</label>
-            <br>
-            <textarea
-                id="descricao"
-                name="descricao"
-                rows="5"
-                cols="50"
-            >{{ old('descricao') }}</textarea>
-        </div>
+    </div>
 
-        <br>
-
-        <button type="submit">Cadastrar Livro</button>
-
-        <a href="{{ route('livros.index') }}">
-            Cancelar
-        </a>
-
-    </form>
+</div>
 
 @endsection

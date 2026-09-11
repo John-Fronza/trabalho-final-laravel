@@ -4,97 +4,73 @@
 
 @section('content')
 
-    <h1>Editar Usuário</h1>
+<div class="mx-auto max-w-3xl">
 
-    @if ($errors->any())
+    {{-- Cabeçalho --}}
+    <x-page-header
+        title="Editar usuário"
+        description="Atualize as informações do usuário cadastrado."
+    />
 
-        <div class="erro">
+    {{-- Formulário --}}
+    <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
 
-            <strong>Corrija os seguintes erros:</strong>
+        @if ($errors->any())
 
-            <ul>
-                @foreach ($errors->all() as $erro)
-                    <li>{{ $erro }}</li>
-                @endforeach
-            </ul>
+            <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
 
-        </div>
+                <p class="font-medium">
+                    Corrija os seguintes erros:
+                </p>
 
-    @endif
+                <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+                    @foreach ($errors->all() as $erro)
+                        <li>{{ $erro }}</li>
+                    @endforeach
+                </ul>
 
-    <form
-        action="{{ route('usuarios.update', $usuario) }}"
-        method="POST"
-    >
+            </div>
 
-        @csrf
-        @method('PUT')
+        @endif
 
-        <div>
-            <label for="cpf">CPF:</label>
 
-            <input
-                type="text"
-                id="cpf"
-                name="cpf"
-                value="{{ old('cpf', $usuario->cpf) }}"
-                maxlength="11"
-                required
-            >
-        </div>
+        <form
+            action="{{ route('usuarios.update', $usuario) }}"
+            method="POST"
+        >
 
-        <br>
+            @csrf
+            @method('PUT')
 
-        <div>
-            <label for="nome">Nome:</label>
+            <x-usuario-form
+                mode="edit"
+                :usuario="$usuario"
+            />
 
-            <input
-                type="text"
-                id="nome"
-                name="nome"
-                value="{{ old('nome', $usuario->nome) }}"
-                required
-            >
-        </div>
 
-        <br>
+            {{-- Botões --}}
+            <div class="mt-8 flex justify-end gap-3">
 
-        <div>
-            <label for="email">E-mail:</label>
+                <x-button
+                    text="Cancelar"
+                    type="button"
+                    color="slate"
+                    onclick="history.back()"
+                    class="!bg-white !text-slate-700 !ring-1 !ring-slate-300 hover:!bg-slate-50"
+                />
 
-            <input
-                type="email"
-                id="email"
-                name="email"
-                value="{{ old('email', $usuario->email) }}"
-                required
-            >
-        </div>
+                <x-button
+                    text="Salvar alterações"
+                    type="submit"
+                    color="green"
+                />
 
-        <br>
+            </div>
 
-        <div>
-            <label for="telefone">Telefone:</label>
+        </form>
 
-            <input
-                type="text"
-                id="telefone"
-                name="telefone"
-                value="{{ old('telefone', $usuario->telefone) }}"
-                required
-            >
-        </div>
+    </div>
 
-        <br>
-
-        <button type="submit">
-            Salvar alterações
-        </button>
-
-        <a href="{{ route('usuarios.show', $usuario) }}">
-            Cancelar
-        </a>
-
-    </form>
+</div>
 
 @endsection

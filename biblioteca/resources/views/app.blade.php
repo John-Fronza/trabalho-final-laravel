@@ -6,64 +6,31 @@
 
     <title>@yield('title', 'Biblioteca')</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-
-        nav {
-            background-color: #333;
-            padding: 15px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin-right: 20px;
-        }
-
-        main {
-            max-width: 1100px;
-            margin: 30px auto;
-            background-color: white;
-            padding: 25px;
-        }
-
-        .sucesso {
-            background-color: #d4edda;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-
-        .erro {
-            background-color: #f8d7da;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-    </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>
-<body>
+
+<body class="min-h-screen bg-gray-100 text-gray-800">
 
     @include('includes.navbar')
 
-    <main>
+    <main class="mx-auto max-w-6xl px-4 py-8">
+
         @if (session('sucesso'))
-            <div class="sucesso">
+            <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-800">
                 {{ session('sucesso') }}
             </div>
         @endif
 
         @if (session('erro'))
-            <div class="erro">
+            <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
                 {{ session('erro') }}
             </div>
         @endif
 
         @yield('content')
+
     </main>
 
     @stack('scripts')

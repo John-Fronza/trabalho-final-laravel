@@ -96,6 +96,34 @@
         {{-- Ações --}}
         <div class="mt-8 flex justify-end gap-3">
 
+            @if ($emprestimo->emprestado && !$emprestimo->data_devolucao_prevista->lt(today()))
+
+                <form
+                    action="{{ route('emprestimos.renovar', $emprestimo) }}"
+                    method="POST"
+                >
+                    @csrf
+
+                    <button
+                        type="submit"
+                        class="inline-flex items-center justify-center rounded-lg bg-yellow-500 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2"
+                    >
+                        Renovar por 14 dias
+                    </button>
+                </form>
+
+            @else
+
+                <button
+                    type="button"
+                    disabled
+                    class="inline-flex cursor-not-allowed items-center justify-center rounded-lg bg-slate-200 px-4 py-2.5 text-sm font-medium text-slate-400"
+                >
+                    Renovar por 14 dias
+                </button>
+
+            @endif
+
             <x-button
                 text="Editar empréstimo"
                 :href="route('emprestimos.edit', $emprestimo)"

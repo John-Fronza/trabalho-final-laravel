@@ -48,15 +48,10 @@
             </h2>
 
             @if ($usuario->emprestimos->isEmpty())
-
-                <div class="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-
-                    <p class="text-slate-600">
-                        Este usuário ainda não possui empréstimos registrados.
-                    </p>
-
-                </div>
-
+                <x-empty-state
+                    title="Nenhum empréstimo registrado"
+                    message="Este usuário ainda não possui empréstimos registrados."
+                />
             @else
 
                 <x-table>

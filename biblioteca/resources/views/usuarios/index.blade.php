@@ -23,22 +23,10 @@
 
 {{-- Tabela --}}
 @if ($usuarios->isEmpty())
-
-    <div class="rounded-xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
-
-        <p class="text-slate-600">
-            Nenhum usuário cadastrado.
-        </p>
-
-        <a
-            href="{{ route('usuarios.create') }}"
-            class="mt-4 inline-block text-sm font-medium text-slate-700 hover:text-slate-950 hover:underline"
-        >
-            Cadastrar o primeiro usuário
-        </a>
-
-    </div>
-
+    <x-empty-state 
+        title="Nenhum usuário cadastrado" 
+        message="Cadastre um usuário para começar a registrar empréstimos."
+    />
 @else
 
     <x-table>

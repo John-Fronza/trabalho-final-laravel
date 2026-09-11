@@ -236,4 +236,36 @@ class EmprestimoController extends Controller
                 ->with('erro', 'Não foi possível excluir o empréstimo.');
         }
     }
+
+    public function renovar(Emprestimo $emprestimo)
+    {
+        if (!$emprestimo->emprestado) {
+            return redirect()
+                ->back()
+                ->with('erro', 'Não é possível renovar um empréstimo que já foi devolvido.');
+        }
+
+        if ($emprestimo->data_devolucao_prevista->lt(today())) {
+            return redirect()
+                ->back()
+                ->with('erro', 'Não é possível renovar um empréstimo atrasado.');
+        }
+
+        try {
+            $emprestimo->update([
+                'data_devolucao_prevista' => $emprestimo
+                    ->data_devolucao_prevista
+                    ->addDays(14),
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('sucesso', 'Empréstimo renovado por mais 14 dias!');
+        } catch (QueryException $e) {
+            return redirect()
+                ->back()
+                ->with('erro', 'Não foi possível renovar o empréstimo.');
+        }
+    }
+
 }

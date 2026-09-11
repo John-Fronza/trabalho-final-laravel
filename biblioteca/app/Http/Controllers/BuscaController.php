@@ -14,27 +14,47 @@ class BuscaController extends Controller
         $modo = $request->input('modo', 'nome');
         $termo = $request->input('termo');
 
-        // Se a pesquisa for por ID
+        $resultados = collect();
+        $mensagem = null;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Busca por ID
+        |--------------------------------------------------------------------------
+        */
+
         if ($modo === 'id' && $termo) {
 
             if ($tipo === 'livro') {
+                $livro = Livro::find($termo);
 
-                return redirect()->route('busca.livro.id', [
-                    'id' => $termo
-                ]);
+                if ($livro) {
+                    return redirect()->route('busca.livro.id', [
+                        'id' => $termo
+                    ]);
+                }
 
+                $mensagem = 'Não encontramos nenhum livro com esse ID.';
             }
 
             if ($tipo === 'usuario') {
+                $usuario = Usuario::find($termo);
 
-                return redirect()->route('busca.usuario.id', [
-                    'id' => $termo
-                ]);
+                if ($usuario) {
+                    return redirect()->route('busca.usuario.id', [
+                        'id' => $termo
+                    ]);
+                }
+
+                $mensagem = 'Não encontramos nenhum usuário com esse ID.';
             }
         }
 
-        // Pesquisa por nome
-        $resultados = collect();
+        /*
+        |--------------------------------------------------------------------------
+        | Busca por nome
+        |--------------------------------------------------------------------------
+        */
 
         if ($modo === 'nome' && $termo) {
 
@@ -53,20 +73,31 @@ class BuscaController extends Controller
                     'like',
                     '%' . $termo . '%'
                 )->get();
+
             }
+
         }
 
         return view('busca', compact(
             'tipo',
             'modo',
             'termo',
-            'resultados'
+            'resultados',
+            'mensagem'
         ));
     }
 
     public function buscarLivroPorId($id)
     {
-        $livro = Livro::findOrFail($id);
+        $livro = Livro::find($id);
+
+        if (!$livro) {
+            return redirect()->route('busca.index', [
+                'tipo' => 'livro',
+                'modo' => 'id',
+                'termo' => $id,
+            ]);
+        }
 
         $livro->load('emprestimos.usuario');
 
@@ -75,7 +106,15 @@ class BuscaController extends Controller
 
     public function buscarUsuarioPorId($id)
     {
-        $usuario = Usuario::findOrFail($id);
+        $usuario = Usuario::find($id);
+
+        if (!$usuario) {
+            return redirect()->route('busca.index', [
+                'tipo' => 'usuario',
+                'modo' => 'id',
+                'termo' => $id,
+            ]);
+        }
 
         $usuario->load('emprestimos.livro');
 

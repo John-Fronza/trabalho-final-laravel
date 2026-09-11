@@ -1,4 +1,3 @@
-```blade
 @extends('app')
 
 @section('title', 'Detalhes do Livro')
@@ -50,9 +49,30 @@
                 @endif
 
                 <x-detail label="Exemplares disponíveis">
-                    {{ $livro->exemplares_disponiveis }}
-                    /
-                    {{ $livro->exemplares_totais }}
+
+                    @if ($livro->exemplares_disponiveis === 0)
+
+                        <x-badge
+                            :text="$livro->exemplares_disponiveis . '/' . $livro->exemplares_totais"
+                            color="red"
+                        />
+
+                    @elseif ($livro->exemplares_disponiveis <= 2)
+
+                        <x-badge
+                            :text="$livro->exemplares_disponiveis . '/' . $livro->exemplares_totais"
+                            color="yellow"
+                        />
+
+                    @else
+
+                        <x-badge
+                            :text="$livro->exemplares_disponiveis . '/' . $livro->exemplares_totais"
+                            color="green"
+                        />
+
+                    @endif
+
                 </x-detail>
 
                 <x-detail label="Descrição">
@@ -75,15 +95,10 @@
             </h2>
 
             @if ($livro->emprestimos->isEmpty())
-
-                <div class="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-
-                    <p class="text-slate-600">
-                        Este livro ainda não possui empréstimos registrados.
-                    </p>
-
-                </div>
-
+                <x-empty-state
+                    title="Nenhum empréstimo registrado"
+                    message="Este livro ainda não possui empréstimos registrados."
+                />
             @else
 
                 <x-table>

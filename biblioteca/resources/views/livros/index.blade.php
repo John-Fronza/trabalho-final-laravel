@@ -23,22 +23,10 @@
 
     {{-- Tabela --}}
     @if ($livros->isEmpty())
-
-        <div class="rounded-xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
-
-            <p class="text-slate-600">
-                Nenhum livro cadastrado.
-            </p>
-
-            <a
-                href="{{ route('livros.create') }}"
-                class="mt-4 inline-block text-sm font-medium text-slate-700 hover:text-slate-950 hover:underline"
-            >
-                Cadastrar o primeiro livro
-            </a>
-
-        </div>
-
+        <x-empty-state 
+            title="Nenhum livro cadastrado" 
+            message="Cadastre o primeiro livro para começar a montar o acervo."
+        />
     @else
 
         <x-table>
@@ -98,10 +86,31 @@
                         {{ $livro->categoria }}
                     </td>
 
-                    <td class="px-5 py-4 text-slate-600">
-                        {{ $livro->exemplares_disponiveis }}
-                        /
-                        {{ $livro->exemplares_totais }}
+                    <td class="px-5 py-4">
+
+                        @if ($livro->exemplares_disponiveis === 0)
+
+                            <x-badge
+                                :text="$livro->exemplares_disponiveis . '/' . $livro->exemplares_totais"
+                                color="red"
+                            />
+
+                        @elseif ($livro->exemplares_disponiveis <= 2)
+
+                            <x-badge
+                                :text="$livro->exemplares_disponiveis . '/' . $livro->exemplares_totais"
+                                color="yellow"
+                            />
+
+                        @else
+
+                            <x-badge
+                                :text="$livro->exemplares_disponiveis . '/' . $livro->exemplares_totais"
+                                color="green"
+                            />
+
+                        @endif
+
                     </td>
 
                     <td class="px-5 py-4">

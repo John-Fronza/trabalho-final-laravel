@@ -23,22 +23,10 @@
 
 {{-- Tabela --}}
 @if ($emprestimos->isEmpty())
-
-    <div class="rounded-xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
-
-        <p class="text-slate-600">
-            Nenhum empréstimo cadastrado.
-        </p>
-
-        <a
-            href="{{ route('emprestimos.create') }}"
-            class="mt-4 inline-block text-sm font-medium text-slate-700 hover:text-slate-950 hover:underline"
-        >
-            Registrar o primeiro empréstimo
-        </a>
-
-    </div>
-
+    <x-empty-state 
+        title="Nenhum empréstimo registrado" 
+        message="Registre um empréstimo para acompanhar os livros emprestados."
+    />
 @else
 
     <x-table>
@@ -127,9 +115,9 @@
                     @endif
                 </td>
 
-                <td class="px-5 py-4">
+                <td class="whitespace-nowrap px-5 py-4">
 
-                    <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex items-center gap-3">
 
                         <a
                             href="{{ route('emprestimos.show', $emprestimo) }}"
@@ -144,6 +132,28 @@
                         >
                             Editar
                         </a>
+
+                        @if ($emprestimo->emprestado && !$emprestimo->data_devolucao_prevista->lt(today()))
+                            <form 
+                                action="{{ route('emprestimos.renovar', $emprestimo) }}" 
+                                method="POST"
+                            > 
+                                @csrf 
+                                <button 
+                                    type="submit" 
+                                    class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-1 text-xs font-medium text-yellow-700 transition hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                                >
+                                    Renovar
+                                </button>
+                            </form>
+                        @else
+                            <button 
+                                type="button" disabled 
+                                class="inline-flex cursor-not-allowed items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-400"
+                            >
+                                Renovar
+                            </button>
+                        @endif
 
                         <form
                             id="delete-form-{{ $emprestimo->id }}"
